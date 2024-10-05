@@ -50,11 +50,19 @@ st.write(f"### Total Amount of Invoices: ${total_amount_invoices:.2f}")
 
 # List clients by payment average
 st.subheader("List Clients by Average Payment Time")
-payment_time_filter = st.selectbox("Show clients with average payment time less than:", [30, 45, 60])
+payment_time_filter = st.selectbox("Show clients based on average payment time:", ['30 days or less', '31 to 45 days', '46 to 60 days'])
 
 # Calculate payment time averages for all clients
 clients_avg_payment_time = data_df.groupby('Client Name')['Days \'til Paid'].mean().reset_index()
-filtered_clients = clients_avg_payment_time[clients_avg_payment_time['Days \'til Paid'] < payment_time_filter]
 
-st.write(f"Clients with average payment time less than {payment_time_filter} days:")
+# Filter clients based on selected criteria
+if payment_time_filter == '30 days or less':
+    filtered_clients = clients_avg_payment_time[clients_avg_payment_time['Days \'til Paid'] <= 30]
+elif payment_time_filter == '31 to 45 days':
+    filtered_clients = clients_avg_payment_time[(clients_avg_payment_time['Days \'til Paid'] > 30) & (clients_avg_payment_time['Days \'til Paid'] <= 45)]
+elif payment_time_filter == '46 to 60 days':
+    filtered_clients = clients_avg_payment_time[(clients_avg_payment_time['Days \'til Paid'] > 45) & (clients_avg_payment_time['Days \'til Paid'] <= 60)]
+
+# Display filtered clients
+st.write(f"Clients with average payment time: {payment_time_filter}")
 st.dataframe(filtered_clients)
