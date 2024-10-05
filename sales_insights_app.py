@@ -18,21 +18,26 @@ st.title("Company Sales Insights")
 client_names = data_df['Client Name'].unique()
 selected_client = st.selectbox("Select a client", client_names)
 
+# Filter the data for the selected client
+client_data = data_df[data_df['Client Name'] == selected_client]
+
+# Get the range of years for the selected client's data
+client_years = sorted(client_data['Orig Date'].dt.year.unique())
+
 # Date Range Filter
 st.subheader("Filter by Year Range")
-all_years = sorted(data_df['Orig Date'].dt.year.unique())
 selected_option = st.radio("Choose a time range:", ['All Time', 'Custom Range'])
 
 if selected_option == 'Custom Range':
-    start_year = st.selectbox("Start Year", all_years)
-    end_year = st.selectbox("End Year", [year for year in all_years if year >= start_year])
-    filtered_data = data_df[
-        (data_df['Client Name'] == selected_client) &
-        (data_df['Orig Date'].dt.year >= start_year) &
-        (data_df['Orig Date'].dt.year <= end_year)
+    # Limit year selection to the range of available years for the client
+    start_year = st.selectbox("Start Year", client_years)
+    end_year = st.selectbox("End Year", [year for year in client_years if year >= start_year])
+    filtered_data = client_data[
+        (client_data['Orig Date'].dt.year >= start_year) &
+        (client_data['Orig Date'].dt.year <= end_year)
     ]
 else:
-    filtered_data = data_df[data_df['Client Name'] == selected_client]
+    filtered_data = client_data
 
 # Calculate statistics
 average_time_to_pay = filtered_data['Days \'til Paid'].mean()
