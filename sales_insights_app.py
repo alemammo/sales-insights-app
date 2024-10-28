@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 # Load sales data from an updated Excel file
-file_path = 'Updated Sales and Payments.xlsx'  # Ensure this updated file is in the directory
+file_path = 'All Sales and Payments - Clients - salesperson State'  # Ensure this updated file is in the directory
 data_df = pd.read_excel(file_path)
 
 # Clean up column names (strip spaces and standardize)
